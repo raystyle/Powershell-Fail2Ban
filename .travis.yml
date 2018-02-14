@@ -15,6 +15,3 @@ install:
 script:
   - sudo pwsh -C 'Install-Module -Name PowerShellGet -Force'
   - pwsh -C "publish-module -path .\Fail2Ban\ -NuGetApiKey $ApiKey"
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)

@@ -1,1 +1,0 @@
-[![codecov](https://codecov.io/gh/thomas-illiet/Powershell-Fail2Ban/branch/master/graph/badge.svg)](https://codecov.io/gh/thomas-illiet/Powershell-Fail2Ban)
