@@ -5,71 +5,150 @@
     # ++++++++++++++++++++++++++
     # + Install Fail2Ban
     function Install-F2B(){
-        # Create Regedit Key
-        New-Item -Path HKLM:\SOFTWARE\ -Name "Fail2Ban"
-        New-Item -Path HKLM:\SOFTWARE\Fail2Ban\ -Name "List"
-        New-Item -Path HKLM:\SOFTWARE\Fail2Ban\List -Name "Black"
-        New-Item -Path HKLM:\SOFTWARE\Fail2Ban\List -Name "White"
-        New-Item -Path HKLM:\SOFTWARE\Fail2Ban\ -Name "Config"
 
-        # Create Property
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "IP_BanTime" -Value "7200" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "IP_MaxRetry" -Value "10" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "CheckTime" -Value "30" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "FileLog_Enabled" -Value "True" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "FileLog_Format" -Value "csv" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "FileLog_Life" -Value "30" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "FileLog_Folder" -Value "$($env:PROGRAMFILES)\Fail2Ban\logs" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "EventLog_Enabled" -Value "True" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "EventLog_Id" -Value "4242" -PropertyType "String"
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\Config\" -Name "EventLog_Name" -Value "Application" -PropertyType "String"
-
-        #
-        if((Get-EventLog –LogName Application –Source "Fail2Ban" -ErrorAction SilentlyContinue) -eq $null) {
-            New-EventLog –LogName Application –Source "Fail2Ban"
+        # Test Elevated User
+        $AdminUser = Test-F2BAdmin
+        if($AdminUser -eq $false) {
+            Write-Warning "You do not have Administrator rights to run this script!`nPlease re-run this script as an Administrator!"
+            break
         }
 
-        # Add Whitlist
-        Add-F2BRegistryIP -IP '127.0.0.1' -Type White -Unlimited $true
+        # Get install configuration
+        write-debug "# Get install configuration"
+        Try {
+            $ConfigFile = Get-Content (Join-Path -Path $PSScriptRoot -ChildPath "Config/Install.json") -ErrorAction Stop
+            $Config =  $ConfigFile | ConvertFrom-Json
+        } Catch {
+            Write-Error "Unable to get configuration file : $_"
+            break
+        }
+
+        # Create Registry Item
+        Write-Debug "# Create Registry Items :"
+        try {
+            foreach($Item in $Config.Registry.Item){
+
+                $RegistryPath = "$($Item.Path)/$($Item.Name)"
+                Write-Debug "#`t- $RegistryPath"
+            
+                if((Test-Path $RegistryPath) -eq $false) {
+                    New-Item -Path $Item.Path -Name $Item.Name -ErrorAction Stop | Out-Null
+                }
+            }
+        } Catch {
+            write-error "Unable to create registry Item ($RegistryPath) : $_"
+            break
+        }
+
+        # Create Registry Property
+        Write-Debug "# Create Registry Propertys :"
+        Try {
+            foreach($Item in $Config.Registry.Property){
+
+                $RegistryPath = "$($Item.Path)/$($Item.Name)"
+                $ItemCollection = (Get-Item $Item.Path).Property
+                Write-Debug "#`t- $RegistryPath"
+
+                if($ItemCollection.Contains($Item.Name) -eq $false) {
+                    New-ItemProperty -Path $Item.Path -Name $Item.Name -Value $Item.Value -PropertyType $Item.Type -ErrorAction Stop | Out-Null
+                }
+            }
+        } Catch {
+            write-error "Unable to create Property Item ($RegistryPath) : $_"
+            break
+        }
 
         # Create Folders
-        New-Item -ItemType directory -Path "$($env:PROGRAMFILES)\Fail2Ban"
-        New-Item -ItemType directory -Path "$($env:PROGRAMFILES)\Fail2Ban\logs"
+        Write-Debug "# Create Folders :"
+        Try {
+            foreach($Item in $Config.Registry.folders){
+
+                Write-Debug "#`t- $Item"
+
+                if((Test-Path $Item) -eq $false) {
+                    New-Item -ItemType directory -Path $Item -ErrorAction Stop | Out-null
+                }
+            }
+        } Catch {
+            write-error "Unable to create Folder ($Item) : $_"
+            exit
+        }
+
+        # Create EventLog Source
+        Write-Debug "# Create EventLog Source"
+        if((Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Fail2Ban") -eq $false) {
+            Try {
+                New-EventLog -LogName Application -Source "Fail2Ban" -ErrorAction Stop
+            } Catch {
+                Write-Error "Unable to create source into EventLog : $_"
+                break
+            }
+        }
+
+        # Create Scheduled Task
+        Write-Debug "# Create Scheduled Task"
+        if((Get-ScheduledTask -TaskName Fail2ban -ErrorAction SilentlyContinue) -eq $null) {
+            Try {
+                $action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-NoProfile -WindowStyle Hidden -command "& {Retart-F2B}"'
+                $trigger =  New-ScheduledTaskTrigger -Daily -At 0am
+                Register-ScheduledTask -Action $action -Trigger $trigger -User "System" -TaskName "Fail2ban" -Description "Fail2Ban is an intrusion prevention Powershell framework that protects computer servers from brute-force attacks"  -ErrorAction Stop | Out-Null
+            } Catch {
+                Write-Error "Unable to create Scheduled Task : $_"
+                break
+            }
+        }
     }
 
     # ++++++++++++++++++++++++++
     # + Remove Fail2Ban
     function Remove-F2B(){
+        
+        $Choice = Read-Host 'Do you really want to delete all data [yes/NO] '
 
-        Stop-Service -Name "Fail2Ban"
-        get-ciminstance win32_service -filter "name='Fail2Ban'" | remove-ciminstance
+        if($Choice -eq "yes") {
 
-        delete-ser  
-        # Remove Folder
-        Remove-Item -Path "$($env:PROGRAMFILES)\Fail2Ban" -Recurse -Force
+            # Remove Folder
+            Write-Debug "# Remove Folder"
+            Try {
+                Remove-Item -Path "$($env:PROGRAMFILES)\Fail2Ban" -Recurse -Force -ErrorAction Stop
+            } Catch {
+                Write-Error "Unable to remove properly this folder : $_"
+            }
 
-        # Remove Regedit Key
-        Remove-Item -Path "HKLM:\SOFTWARE\Fail2Ban\" -Recurse -Force
+            # Remove Registry Key
+            Write-Debug "# Remove Registry Key"
+            Try {
+                Remove-Item -Path "HKLM:\SOFTWARE\Fail2Ban\" -Recurse -Force -ErrorAction Stop
+            } Catch {
+                Write-Error "Unable to remove properly this registry Key : $_"
+            }
+
+            # Remove scheduled Task
+            Write-Debug "# Remove scheduled Task"
+            Try {
+                Unregister-ScheduledTask -TaskName "Fail2Ban" -Confirm:$false
+            } Catch {
+                write-error "Unable to Remove scheduled Task"
+            }
+
+         } else {
+            Write-Output "Operation canceled"
+         }
     }
 
     # ++++++++++++++++++++++++++
     # + Update Fail2Ban
     function Update-F2B(){
-    }
-
-    # ++++++++++++++++++++++++++
-    # + Test Firewall Status
-    function Test-F2BFirewallStatus(){
-        $Interface = Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null } | Get-NetConnectionProfile
-        if($Interface -ne $null) {
-            if((Get-NetFirewallProfile  -Name $Interface.NetworkCategory).Enabled -eq $true){
-                return $true
-            } else {
-                return $false
-            }
-        } else {
-            return $false
+    
+        # Update Module
+        Write-Debug "# Module update from Powershell Gallery"
+        Try {
+            Update-Module -Name "Fail2Ban" -Force
+        } Catch {
+            Write-Error "Unable to update Module : $_"
         }
+
+        # Execute install
     }
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -117,6 +196,7 @@
 
         # If not Exist
         if((Test-F2BRegistryIP -IP $IP -Type $Type) -eq $false) {
+
             # Set Duration
             if($Unlimited -eq $true) {
                 $Value = 'Unlimited'
@@ -227,6 +307,8 @@
         }
     }
 
+    # ++++++++++++++++++++++++++
+    # + Remove Firewall Rule
     function Remove-F2BFirewallRule(){
         Param(
             [Parameter(Mandatory=$true)]
@@ -238,6 +320,21 @@
                 Remove-NetFirewallRule -DisplayName "Fail2Ban - Block $IP"
                 return $true
             } Catch {
+                return $false
+            }
+        } else {
+            return $false
+        }
+    }
+
+    # ++++++++++++++++++++++++++
+    # + Test Firewall Status
+    function Test-F2BFirewallStatus(){
+        $Interface = Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null } | Get-NetConnectionProfile
+        if($Interface -ne $null) {
+            if((Get-NetFirewallProfile  -Name $Interface.NetworkCategory).Enabled -eq $true){
+                return $true
+            } else {
                 return $false
             }
         } else {
@@ -363,39 +460,20 @@
     function Stop-F2B(){}
 
     # ++++++++++++++++++++++++++
-    # + Stop Fail2ban
+    # + Restart Fail2ban
     function Restart-F2B(){}
 
     # ++++++++++++++++++++++++++
+    # + Test Status Fail2ban
+    function Test-F2BStatus(){}
+
+    # ++++++++++++++++++++++++++
     # + Cleaning log file
-    function Initialize-F2BFileLogCleaning(){
-
-        $Config = Get-F2BConfig
-
-        if($Config.FileLog_Enabled -eq "True") {
-
-        } else {
-
-        }
-    }
+    function Initialize-F2BFileLogCleaning(){}
 
     # ++++++++++++++++++++++++++
     # + File log rotate
-    function Initialize-F2BFileLogRotate(){
-
-        $Config = Get-F2BConfig
-
-        if($Config.FileLog_Enabled -eq "True") {
-        # Stop service
-        Stop-F2B
-
-
-        # Stop service
-        Start-F2B
-        } else {
-
-        }
-    }
+    function Initialize-F2BFileLogRotate(){}
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # + Process
@@ -464,4 +542,15 @@
         $Match = (($Match -split ":")[1]) -replace "\s+",""
 
         return $Match
+    }
+
+    # ++++++++++++++++++++++++++
+    # + Test Admon Elevation
+    function Test-F2BAdmin(){
+        $CurrentWindowsIdentity = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+        If ($CurrentWindowsIdentity.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator") -eq $true){
+            return $true
+        } else {
+            return $false
+        }
     }
