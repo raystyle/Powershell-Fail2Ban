@@ -1,0 +1,52 @@
+{
+    "Type":[
+        {
+            "Name" : "Firewall",
+            "Function" :[
+                "Add-F2BFirewallRule",
+                "Remove-F2BFirewallRule",
+                "Test-F2BFirewallRule",
+                "Test-F2BFirewallStatus",
+                "Get-F2BFirewallRule"
+            ]
+        },
+        {
+            "Name" : "Registry",
+            "Function" :[
+                "Add-F2BRegistryIP",
+                "Get-F2BRegistryIP",
+                "Remove-F2BRegistryIP",
+                "Test-F2BRegistryIP"
+            ]
+        },
+        {
+            "Name" : "Setup",
+            "Function" :[
+                "Install-F2B",
+                "Remove-F2B",
+                "Update-F2B"
+            ]
+        },
+        {
+            "Name" : "System",
+            "Function" :[
+                "Add-F2BLog",
+                "Disable-F2B",
+                "Enable-F2B",
+                "Get-F2BConfig",
+                "Get-F2BStatus",
+                "Restart-F2B",
+                "Set-F2BConfig",
+                "Start-F2B",
+                "Stop-F2B"
+            ]
+        },
+        {
+            "Name" : "Tool",
+            "Function" :[
+                "Get-F2BMatch",
+                "Test-F2BAdmin"
+            ]
+        }
+    ]
+}

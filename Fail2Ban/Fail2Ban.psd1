@@ -4,7 +4,7 @@
     RootModule = 'Fail2Ban.psm1'
     
     # Version number of this module.
-    ModuleVersion = '0.0.4'
+    ModuleVersion = '0.0.5'
     
     # ID used to uniquely identify this module
     GUID = '5b658ad8-d1f9-4ab2-8505-89bc6c8651b0'
@@ -22,7 +22,31 @@
     Description = 'Fail2Ban is an intrusion prevention Powershell framework that protects computer servers from brute-force attacks'
     
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @('Install-F2B','Remove-F2B','Update-F2B','Test-F2BFirewallStatus','Test-F2BRegistryIP','Add-F2BRegistryIP','Remove-F2BRegistryIP', 'Get-F2BRegistryIP', 'Test-F2BFirewallRule', 'Add-F2BFirewallRule', 'Get-F2BConfig', 'Set-F2BConfig', 'Get-F2BEventLog', 'Add-F2BBlockedIP','Add-F2BEventLog','Start-F2B','Stop-F2B','Initialize-F2BLogRotate','Remove-F2BBlockedIP', 'Remove-F2BFirewallRule','Restart-F2B','Test-F2BStatus')
+    FunctionsToExport = @(
+                            'Install-F2B',
+                            'Remove-F2B',
+                            'Update-F2B',
+                            'Test-F2BFirewallStatus',
+                            'Test-F2BRegistryIP',
+                            'Add-F2BRegistryIP',
+                            'Remove-F2BRegistryIP', 
+                            'Get-F2BRegistryIP', 
+                            'Test-F2BFirewallRule',
+                            'Add-F2BFirewallRule',
+                            'Get-F2BConfig',
+                            'Set-F2BConfig',
+                            'Get-F2BEventLog',
+                            'Add-F2BBlockedIP',
+                            'Add-F2BEventLog',
+                            'Start-F2B',
+                            'Stop-F2B',
+                            'Initialize-F2BLogRotate',
+                            'Remove-F2BBlockedIP',
+                            'Remove-F2BFirewallRule',
+                            'Restart-F2B',
+                            'Test-F2BStatus',
+                            'Get-F2BFirewallRule'
+                        )
     
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport = ''
@@ -49,6 +73,7 @@
     
             # A URL to an icon representing this module.
             IconUri = 'https://raw.githubusercontent.com/thomas-illiet/Powershell-Fail2Ban/master/Resource/Icon.png'
+
     
         } # End of PSData hashtable
     

@@ -51,7 +51,7 @@
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
                 "Name":"FileLog_Enabled",
                 "Type":"String",
-                "Value":"True"
+                "Value":"False"
             },
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
