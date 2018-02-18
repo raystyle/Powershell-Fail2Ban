@@ -36,10 +36,12 @@ Function Add-F2BRegistryIP(){
             $Value = ([String](Get-Date))
         }
 
-        New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\List\$Type" -Name $IP -Value $Value -PropertyType "String"
-
-        return $true
+        $NewItem = New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\List\$Type" -Name $IP -Value $Value -PropertyType "String"
+        Add-F2BLog -Type Information -Message "Add registry $IP to $($Type)List"
+        return $NewItem
     } Catch {
+        $Message = "Unable to add a registry '$IP' to $($Type)List"
+        Add-F2BLog -Type Error -Message $Message 
         return $false
     }
 

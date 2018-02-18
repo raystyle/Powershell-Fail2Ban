@@ -28,7 +28,7 @@ Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "++++++++++"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "++  ++++++`t Fail2Ban Powershell" 
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "+++  +++++"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "++++  ++++"
-Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "++++  ++++`t Author  : Thomas ILLIET / Damien VAN ROBAEYS"
+Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "++++  ++++`t Author  : Thomas ILLIET"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "+++  +++++`t Version : V0.0.5"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "++      ++"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "++++++++++"
@@ -71,19 +71,34 @@ Try {
 
 # +++++++++++++++++++++++++++++
 # Check Update
-Try{
-    if (Get-Module -ListAvailable -Name 'PowerShellGet') {
-        Write-Host "# + " -ForegroundColor Yellow  -nonewline; Write-Host "- Check Update " -nonewline
-        if((Get-Module -ListAvailable -Name 'Fail2ban').Version -ge (Find-Module -Name 'Fail2ban').Version) {
-            Write-Host "`t[UPDATED]" -ForegroundColor green
+$CheckVersion = (Get-F2BConfig -ConfigFolder System -ErrorAction SilentlyContinue).Service_CheckUpdate
+if( $CheckVersion -eq "1") {
+    Try{
+        if (Get-Module -ListAvailable -Name 'PowerShellGet') {
+            Write-Host "# + " -ForegroundColor Yellow  -nonewline; Write-Host "- Check Update " -nonewline
+            $LocalVersion = (Get-Module -ListAvailable -Name 'Fail2ban').Version
+            $OnlineVersion = (Find-Module -Name 'Fail2ban' ).Version
+            if( $LocalVersion -ge $OnlineVersion) {
+                Write-Host "`t[UPDATED]" -ForegroundColor green
+            } else {
+                Write-Host "`t[OUTDATED]" -ForegroundColor yellow
+
+                $AutoUpdate = (Get-F2BConfig -ConfigFolder System -ErrorAction SilentlyContinue).Service_AutoUpdate
+                if($AutoUpdate -eq "1") {
+                    Try {
+                        Update-Module -Name "Fail2Ban" -Force
+                        Write-Host "# + - Please restart module to apply the changes !!!" -ForegroundColor Yellow
+                    } Catch {
+                        write-Error "Unable to Update Fail2ban : $_"
+                    }
+                }
+            }
         } else {
-            Write-Host "`t[OUTDATED]" -ForegroundColor yellow
+            Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "Unable to check Update, Please install 'PowerShellGet' !" -ForegroundColor red
         }
-    } else {
-        Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "Unable to check Update, Please install 'PowerShellGet' !" -ForegroundColor red
+    } Catch {
+        Write-error "Unable to Check update for this module !"
     }
-} Catch {
-    Write-error "Unable to Check update for this module !"
 }
 Write-Host "# + " -ForegroundColor Yellow
 
@@ -104,7 +119,6 @@ Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "| Name        
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "|--------------------|----------|----------------------------------------------------|"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "| Install-F2B        | Setup    |                                                    |"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "| Remove-F2B         | Setup    |                                                    |"
-Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "| Update-F2B         | Setup    |                                                    |"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "| Disable-F2B        | Service  |                                                    |"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "| Enable-F2B         | Service  |                                                    |"
 Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "| Restart-F2B        | Service  |                                                    |"

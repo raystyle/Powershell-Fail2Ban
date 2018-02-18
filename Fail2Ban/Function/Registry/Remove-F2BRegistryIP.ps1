@@ -24,8 +24,10 @@ Function Remove-F2BRegistryIP(){
 
     Try {
         Remove-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\List\$Type" -Name $IP
+        Add-F2BLog -Type Information -Message "Remove registry $IP from $($Type)List"
         return $true
     } Catch {
+        Add-F2BLog -Type Error -Message "Unable to remove a registry '$IP' from $($Type)List"
         return $false
     }
     

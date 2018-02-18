@@ -39,6 +39,12 @@
             },
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
+                "Name":"Service_CheckUpdate",
+                "Type":"Dword",
+                "Value":"1"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
                 "Name":"Service_Loop",
                 "Type":"Dword",
                 "Value":"60"
@@ -53,7 +59,7 @@
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
                 "Name":"FileLog_Status",
                 "Type":"Dword",
-                "Value":"1"
+                "Value":"0"
             },
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
@@ -101,19 +107,19 @@
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
                 "Name":"Wefl_Stats",
                 "Type":"Dword",
-                "Value":"1"
+                "Value":"0"
             },
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
                 "Name":"Wefl_MaxAttemptTime",
                 "Type":"Dword",
-                "Value":"60"
+                "Value":"3600"
             },
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
                 "Name":"Wefl_BanTime",
                 "Type":"Dword",
-                "Value":"7200"
+                "Value":"86400"
             },
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/List\/White",

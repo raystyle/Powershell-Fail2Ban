@@ -25,23 +25,19 @@
     FunctionsToExport = @(
                             'Install-F2B',
                             'Remove-F2B',
-                            'Update-F2B',
-
                             'Disable-F2B',
                             'Enable-F2B',
-
                             'Set-F2BConfig',
                             'Get-F2BConfig',
-
                             'Get-F2BStatus',
                             'Restart-F2B',
                             'Start-F2B',
                             'Stop-F2B',
                             'Add-F2BAddress',
-                            
                             'Get-F2BAdmx',
                             'Show-F2BGui',
-                            'Get-F2BHelp'
+                            'Get-F2BHelp',
+                            'Initialize-F2BService'
                         )
     
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

@@ -22,8 +22,7 @@
             "Name" : "Setup",
             "Function" :[
                 "Install-F2B",
-                "Remove-F2B",
-                "Update-F2B"
+                "Remove-F2B"
             ]
         },
         {

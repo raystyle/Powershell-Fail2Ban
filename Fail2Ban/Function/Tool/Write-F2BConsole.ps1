@@ -6,6 +6,7 @@ function Write-F2BConsole () {
         [Parameter(Mandatory=$true,Position=1)]
         [String]$Message
     )
+
     $Date = Get-Date -Format "HH:mm:ss.ffffff"
 
     switch ($Type) {
@@ -14,4 +15,6 @@ function Write-F2BConsole () {
         Default { $Color = "White";   $DisplayType = 'INFO'}
     }
     Write-Host "# + " -ForegroundColor Yellow -nonewline; write-host "$Date [$DisplayType] - $Message"
+
+
 }

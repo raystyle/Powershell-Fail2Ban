@@ -23,10 +23,11 @@ function Add-F2BFirewallRule(){
             Profile       = "Any"
             Action        = "Block"
         }
-        New-NetFirewallRule @PArams -ErrorAction Stop | Out-Null
-        return $true
+        $NewRule = New-NetFirewallRule @PArams -ErrorAction Stop
+        Add-F2BLog -Type Information -Message "Create a new firewall rule to block '$IP'`n`n $($Params | ConvertTo-Json)"
+        return $NewRule
     } Catch {
-        Write-Error "Unable to add a new firewall rule : $_"
+        Add-F2BLog -Type Error -Message "Unable to add a new firewall rule to block '$IP'`n`n $($Params | ConvertTo-Json)"
         return $false
     }
 

@@ -25,12 +25,12 @@ function Remove-F2BAddress(){
     if((Test-F2BRegistryIP -IP $IP -Type $Type) -eq $true){
         Try {
             if($Type -eq 'Black') {
-                Remove-F2BRegistryIP -IP $IP -Type Black
-                Remove-F2BFirewallRule -IP $IP
+                Remove-F2BRegistryIP -IP $IP -Type Black | Out-Null
+                Remove-F2BFirewallRule -IP $IP | Out-Null
             }
 
             if($Type -eq 'White') {
-                Remove-F2BRegistryIP -IP $IP -Type White
+                Remove-F2BRegistryIP -IP $IP -Type White | Out-Null
             }
         } Catch {
             Write-Error "Unable to Remove IP : $_"

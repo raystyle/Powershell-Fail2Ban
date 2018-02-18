@@ -18,9 +18,10 @@ function Remove-F2BFirewallRule(){
     Try {
         $RuleName = "Fail2Ban - Block $IP"
         Remove-NetFirewallRule -DisplayName $RuleName
+        Add-F2BLog -Type Information -Message "Remove a firewall rule '$IP' ($RuleName)"
         return $true
     } Catch {
-        Write-error "Unable to remove a firewall rule ($RuleName)"
+        Add-F2BLog -Type Error -Message "Unable to remove a firewall rule '$IP' ($RuleName)"
         return $false
     }
 

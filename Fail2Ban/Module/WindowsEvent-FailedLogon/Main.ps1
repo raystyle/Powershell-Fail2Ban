@@ -1,8 +1,11 @@
 function Use-WEFL () {
     Param(
-        $Config
+        $ConfigModule,
+        $ConfigSystem
     )                  
        
+    # ++++++++++++++++++++++++
+    # Internal Function
     function Get-F2BMatch(){
         Param(
             [Parameter(Mandatory=$true)]
@@ -24,7 +27,7 @@ function Use-WEFL () {
 
     # ++++++++++++++++++++++++
     # Get Windows Event
-    $AfterDate = (Get-Date).AddSeconds("-$($Config.Wefl_MaxAttemptTime)")
+    $AfterDate = (Get-Date).AddSeconds("-$($ConfigModule.Wefl_MaxAttemptTime)")
     $events = Get-WinEvent -FilterHashtable @{ProviderName= "Microsoft-Windows-Security-Auditing"; LogName = "security"; Id = "4625"; StartTime = [datetime]$AfterDate}
     
     # ++++++++++++++++++++++++
@@ -40,8 +43,9 @@ function Use-WEFL () {
         }
 
         $Obj = [PSCustomObject] @{
+            Id = $i.RecordId
             Username = Get-F2BMatch -Pattern "account name:\s+\w+" -Data $i.message
-            Date = $i.TimeWritten
+            Date = $i.TimeCreated
             IP = Get-F2BMatch -Pattern "Source Network Address:\s+\d{1,3}(\.\d{1,3}){3}" -Data $i.message
             LogonType = $logontype
         }
@@ -52,8 +56,7 @@ function Use-WEFL () {
     # Blocking address
     $IpGroup = $ReturnObj | group IP
     Foreach($Group in $IpGroup) {
-
-        if($Group.Count -ge $Config.Wefl_MaxAttemptCount){
+        if($Group.Count -ge $ConfigModule.Wefl_MaxAttemptCount){
             if((Test-F2BRegistryIP -IP $Group.Name -Type Black) -eq $false) {
                 Add-F2BAddress -IP $Group.Name -Type Black | out-null
                 Write-F2BConsole -Type Information -Message "+ Blocking address $($Group.Name)"
@@ -66,17 +69,16 @@ function Use-WEFL () {
     $BlockedAddress = Get-F2BRegistryIP -Type Black
     foreach ($item in $BlockedAddress.GetEnumerator()) {
         if($item.Value -ne 'Unlimited') {
-            if((([DateTime]$item.Value).AddSeconds($Config.Wefl_BanTime)) -le (get-date)) {
+            if((([DateTime]$item.Value).AddSeconds($ConfigModule.Wefl_BanTime)) -le (get-date)) {
                 Remove-F2BAddress -IP $item.Key -Type Black | out-null
                 Write-F2BConsole -Type Information -Message "+ Unblocking address $($item.Key)"
             }
         }
     }
 
-
     # ++++++++++++++++++++++++
     # Stats
-
-
-    
+    #if($ConfigModule.Wefl_Stats -eq "1"){
+    # 
+    #}    
 }

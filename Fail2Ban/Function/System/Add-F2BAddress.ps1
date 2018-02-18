@@ -35,8 +35,8 @@ function Add-F2BAddress(){
         if((Test-F2BRegistryIP -IP $IP -Type White) -eq $false){
             if((Test-F2BRegistryIP -IP $IP -Type Black) -eq $false){
                 Try {
-                    Add-F2BRegistryIP -IP $IP -Type Black -Unlimited $Unlimited
-                    Add-F2BFirewallRule -IP $IP
+                    Add-F2BRegistryIP -IP $IP -Type Black -Unlimited $Unlimited | Out-Null
+                    Add-F2BFirewallRule -IP $IP | Out-Null
                 } Catch {
                     Write-Error "Unable to Add IP to BlackList: $_"
                 }
@@ -53,15 +53,15 @@ function Add-F2BAddress(){
             # Remove IP if present in BlackList
             if((Test-F2BRegistryIP -IP $IP -Type Black) -eq $true){
                 Try {
-                    Remove-F2BRegistryIP -IP $IP -Type Black
-                    Remove-F2BFirewallRule -IP $IP
+                    Remove-F2BRegistryIP -IP $IP -Type Black | Out-Null
+                    Remove-F2BFirewallRule -IP $IP | Out-Null
                 } Catch {
                     Write-Error "Unable to Remove IP to WhiteList: $_"
                 }
             }
             # Add to WhiteList
             Try {
-                Add-F2BRegistryIP -IP $IP -Type White -Unlimited $Unlimited
+                Add-F2BRegistryIP -IP $IP -Type White -Unlimited $Unlimited | Out-Null
             } Catch {
                 Write-Error "Unable to Add IP to WhiteList : $_"
             }
