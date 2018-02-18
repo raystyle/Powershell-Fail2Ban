@@ -26,26 +26,22 @@
                             'Install-F2B',
                             'Remove-F2B',
                             'Update-F2B',
-                            'Test-F2BFirewallStatus',
-                            'Test-F2BRegistryIP',
-                            'Add-F2BRegistryIP',
-                            'Remove-F2BRegistryIP', 
-                            'Get-F2BRegistryIP', 
-                            'Test-F2BFirewallRule',
-                            'Add-F2BFirewallRule',
-                            'Get-F2BConfig',
+
+                            'Disable-F2B',
+                            'Enable-F2B',
+
                             'Set-F2BConfig',
-                            'Get-F2BEventLog',
-                            'Add-F2BBlockedIP',
-                            'Add-F2BEventLog',
+                            'Get-F2BConfig',
+
+                            'Get-F2BStatus',
+                            'Restart-F2B',
                             'Start-F2B',
                             'Stop-F2B',
-                            'Initialize-F2BLogRotate',
-                            'Remove-F2BBlockedIP',
-                            'Remove-F2BFirewallRule',
-                            'Restart-F2B',
-                            'Test-F2BStatus',
-                            'Get-F2BFirewallRule'
+                            'Add-F2BAddress',
+                            
+                            'Get-F2BAdmx',
+                            'Show-F2BGui',
+                            'Get-F2BHelp'
                         )
     
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

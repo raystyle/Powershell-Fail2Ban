@@ -20,74 +20,100 @@
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban",
                 "Name":"Config"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
+                "Name":"System"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
+                "Name":"Module"
             }
         ],
         "Property":[
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
                 "Name":"Service_AutoUpdate",
-                "Type":"String",
-                "Value":"True"
+                "Type":"Dword",
+                "Value":"1"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
-                "Name":"Service_BanTime",
-                "Type":"String",
-                "Value":"7200"
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
+                "Name":"Service_Loop",
+                "Type":"Dword",
+                "Value":"60"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
-                "Name":"Service_MaxRetry",
-                "Type":"String",
-                "Value":"10"
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
+                "Name":"ConsoleLog_Status",
+                "Type":"Dword",
+                "Value":"1"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
-                "Name":"Service_CheckTime",
-                "Type":"String",
-                "Value":"30"
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
+                "Name":"FileLog_Status",
+                "Type":"Dword",
+                "Value":"1"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
-                "Name":"FileLog_Enabled",
-                "Type":"String",
-                "Value":"False"
-            },
-            {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
-                "Name":"FileLog_Format",
-                "Type":"String",
-                "Value":"csv"
-            },
-            {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
                 "Name":"FileLog_Life",
-                "Type":"String",
+                "Type":"Dword",
                 "Value":"30"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
                 "Name":"FileLog_Folder",
                 "Type":"String",
                 "Value":"C:\/Program Files\/Fail2Ban\/Logs"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
-                "Name":"EventLog_Enabled",
-                "Type":"String",
-                "Value":"True"
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
+                "Name":"EventLog_Status",
+                "Type":"Dword",
+                "Value":"1"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
                 "Name":"EventLog_Id",
-                "Type":"String",
+                "Type":"Dword",
                 "Value":"4242"
             },
             {
-                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config",
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/System",
                 "Name":"EventLog_Name",
                 "Type":"String",
                 "Value":"Application"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
+                "Name":"Wefl_Status",
+                "Type":"Dword",
+                "Value":"1"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
+                "Name":"Wefl_MaxAttemptCount",
+                "Type":"Dword",
+                "Value":"10"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
+                "Name":"Wefl_Stats",
+                "Type":"Dword",
+                "Value":"1"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
+                "Name":"Wefl_MaxAttemptTime",
+                "Type":"Dword",
+                "Value":"60"
+            },
+            {
+                "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/Config\/Module",
+                "Name":"Wefl_BanTime",
+                "Type":"Dword",
+                "Value":"7200"
             },
             {
                 "Path":"HKLM:\/SOFTWARE\/Fail2Ban\/List\/White",

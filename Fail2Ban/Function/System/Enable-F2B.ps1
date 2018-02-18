@@ -1,14 +1,15 @@
-<#         
-    .NOTES  
-        File Name   : Enable-F2B.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+function Enable-F2B(){
+    <#
+    .SYNOPSIS
+        .
+    .EXAMPLE
+        C:\PS> Enable-F2B
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-function Enable-F2B(){
-
+    #>
+    
     Write-Debug "# Enable Fail2ban"
 
     $Task = Get-ScheduledTask -TaskName Fail2ban -ErrorAction SilentlyContinue

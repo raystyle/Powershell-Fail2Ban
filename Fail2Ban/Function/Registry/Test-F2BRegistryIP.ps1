@@ -1,24 +1,29 @@
-<#
-    .NOTES  
-        File Name   : Test-F2BRegistryIP.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+Function Test-F2BRegistryIP(){
+    <#
+    .SYNOPSIS
+        .
+    .PARAMETER Type
+        .
+    .PARAMETER IP
+        .
+    .EXAMPLE
+        C:\PS> Test-F2BRegistryIP -Type Black -IP 1.2.3.4
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-Function Test-F2BRegistryIP(){
+    #>
     Param(
-        [Parameter(Mandatory=$true)]
-        [String]$IP,
-        
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true,Position=0)]
         [ValidateSet('Black','White')]
-        [String]$Type
+        [String]$Type,
+        [Parameter(Mandatory=$true,Position=1)]
+        [IpAddress]$IP
     )
-    $Data = (Get-Item HKLM:\SOFTWARE\Fail2Ban\List\$Type\).Property
+
+    $Data = (Get-Item HKLM:\SOFTWARE\Fail2Ban\List\$Type).Property
     if($Data -ne $null) {
-        if($Data.Contains($IP)) {
+        if($Data -contains $IP) {
             return $true
         } else {
             return $false

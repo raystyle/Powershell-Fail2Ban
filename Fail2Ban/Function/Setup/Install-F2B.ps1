@@ -85,17 +85,17 @@ function Install-F2B(){
     Write-Output "# Create Scheduled Task"
     Try {
         # Service
-        if((Get-ScheduledTask -TaskName "Fail2ban-Manager" -ErrorAction SilentlyContinue) -eq $null) {
+        if((Get-ScheduledTask -TaskName "Fail2Ban-Manager" -ErrorAction SilentlyContinue) -eq $null) {
             $action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-NoProfile -WindowStyle Hidden -command "& {Import-Module Fail2ban; Initialize-F2BService}"'
             $trigger =  New-ScheduledTaskTrigger -AtStartup
-            Register-ScheduledTask -Action $action -Trigger $trigger -User "System" -TaskName "Fail2ban-Service" -Description "Fail2Ban is an intrusion prevention Powershell framework that protects computer servers from brute-force attacks"  -ErrorAction Stop | Out-Null
+            Register-ScheduledTask -Action $action -Trigger $trigger -User "System" -TaskName "Fail2Ban-Service" -Description "Fail2Ban is an intrusion prevention Powershell framework that protects computer servers from brute-force attacks"  -ErrorAction Stop | Out-Null
         }
 
         # Manager
-        if((Get-ScheduledTask -TaskName "Fail2ban-Manager" -ErrorAction SilentlyContinue) -eq $null) {
+        if((Get-ScheduledTask -TaskName "Fail2Ban-Manager" -ErrorAction SilentlyContinue) -eq $null) {
             $action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-NoProfile -WindowStyle Hidden -command "& {Retart-F2B}"'
             $trigger =  New-ScheduledTaskTrigger -Daily -At 0am
-            Register-ScheduledTask -Action $action -Trigger $trigger -User "System" -TaskName "Fail2ban-Manager" -Description "Fail2Ban is an intrusion prevention Powershell framework that protects computer servers from brute-force attacks"  -ErrorAction Stop | Out-Null
+            Register-ScheduledTask -Action $action -Trigger $trigger -User "System" -TaskName "Fail2Ban-Manager" -Description "Fail2Ban is an intrusion prevention Powershell framework that protects computer servers from brute-force attacks"  -ErrorAction Stop | Out-Null
         }
     } Catch {
         Write-Error "Unable to create Scheduled Task : $_"
@@ -103,9 +103,9 @@ function Install-F2B(){
     }
     
     # Start Fail2ban 
-    Write-Output "# Start Fail2ban"
-    if(Start-F2B -ne $true) {
-        write-error "Unable to start Fail2ban"
-        break
-    }
+    #Write-Output "# Start Fail2ban"
+    #if(Start-F2B -ne $true) {
+    #    write-error "Unable to start Fail2ban"
+    #    break
+    #}
 }

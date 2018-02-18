@@ -6,8 +6,7 @@
                 "Add-F2BFirewallRule",
                 "Remove-F2BFirewallRule",
                 "Test-F2BFirewallRule",
-                "Test-F2BFirewallStatus",
-                "Get-F2BFirewallRule"
+                "Test-F2BFirewallStatus"
             ]
         },
         {
@@ -30,22 +29,29 @@
         {
             "Name" : "System",
             "Function" :[
-                "Add-F2BLog",
                 "Disable-F2B",
                 "Enable-F2B",
                 "Get-F2BConfig",
                 "Get-F2BStatus",
+                "Initialize-F2BService",
                 "Restart-F2B",
                 "Set-F2BConfig",
                 "Start-F2B",
-                "Stop-F2B"
+                "Stop-F2B",
+                "Add-F2BAddress",
+                "Remove-F2BAddress"
             ]
         },
         {
             "Name" : "Tool",
             "Function" :[
-                "Get-F2BMatch",
-                "Test-F2BAdmin"
+                "Test-F2BScheduledTask",
+                "Add-F2BLog",
+                "Get-F2BAdmx",
+                "Get-F2BHelp",
+                "Show-F2BGui",
+                "Write-F2BConsole",
+                "Start-F2BSleep"
             ]
         }
     ]

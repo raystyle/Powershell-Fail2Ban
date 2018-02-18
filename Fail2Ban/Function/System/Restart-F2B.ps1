@@ -1,12 +1,18 @@
-<#         
-    .NOTES  
-        File Name   : Restart-F2B.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+function Restart-F2B (){
+    <#
+    .SYNOPSIS
+        Function to Restart Fail2Ban Service
+    .EXAMPLE
+        C:\PS> Restart-F2B
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-function Restart-F2B (){
-    
+    #>
+    Try {
+        Stop-F2B
+        Start-F2B
+    } Catch {
+        write-error "Unable to restart Fail2ban Service"
+    }
 }
