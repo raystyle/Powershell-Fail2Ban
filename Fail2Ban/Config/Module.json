@@ -1,3 +1,9 @@
 {
-    
+    "Module": [
+        {
+            "Name":"WindowsEvent - FailedLogon",
+            "FilePath":"WindowsEvent-FailedLogon\/Main.ps1",
+            "Prefix":"Wefl"
+        }
+    ]
 }

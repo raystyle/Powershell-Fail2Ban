@@ -1,13 +1,16 @@
-<#
-    .NOTES  
-        File Name   : Get-F2BRegistryIP.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+Function Get-F2BRegistryIP(){
+    <#
+    .SYNOPSIS
+        .
+    .PARAMETER Type
+        .
+    .EXAMPLE
+        C:\PS> AGet-F2BRegistryIP -Type Black
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-Function Get-F2BRegistryIP(){
+    #>
     Param(
         [Parameter(Mandatory=$true)]
         [ValidateSet('Black','White')]

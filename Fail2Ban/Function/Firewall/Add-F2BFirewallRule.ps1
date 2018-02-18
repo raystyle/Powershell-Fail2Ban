@@ -1,36 +1,34 @@
-<#
-    .NOTES  
-        File Name   : Add-F2BFirewallRule.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+function Add-F2BFirewallRule(){
+    <#
+    .SYNOPSIS
+        . Creates a new inbound firewall rule
+    .PARAMETER IP
+        . IP addresses
+    .EXAMPLE
+        C:\PS> Add-F2BFirewallRule -IP 1.2.3.4
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-function Add-F2BFirewallRule(){
+    #>
     Param(
         [Parameter(Mandatory=$true)]
         [IpAddress]$IP
     )
-
-    if((Test-F2BFirewallRule -IP $IP) -eq $false) {
-        Try {
-            $Params = @{
-                DisplayName   = "Fail2Ban - Block $IP"
-                Direction     = "Inbound"
-                RemoteAddress = $IP
-                Profile       = "Any"
-                Action        = "Block"
-            }
-            New-NetFirewallRule @PArams -ErrorAction Stop | Out-Null
-            Add-F2BLog -Type Information -Category '1' -Message "Add new firewall rule : $IP"
-            return $true
-        } Catch {
-            Add-F2BLog -Type Error -Category '1' -Message "Unable to add a new firewall rule : $_"
-            return $false
+    Try {
+        $Params = @{
+            DisplayName   = "Fail2Ban - Block $IP"
+            Direction     = "Inbound"
+            RemoteAddress = $IP
+            Profile       = "Any"
+            Action        = "Block"
         }
-    } else {
-        Add-F2BLog -Type Warning -Category '1' -Message "Firewall Rule already exist : $IP"
+        $NewRule = New-NetFirewallRule @PArams -ErrorAction Stop
+        Add-F2BLog -Type Information -Message "Create a new firewall rule to block '$IP'`n`n $($Params | ConvertTo-Json)"
+        return $NewRule
+    } Catch {
+        Add-F2BLog -Type Error -Message "Unable to add a new firewall rule to block '$IP'`n`n $($Params | ConvertTo-Json)"
         return $false
     }
+
 }

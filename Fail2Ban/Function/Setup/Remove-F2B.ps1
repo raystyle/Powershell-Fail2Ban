@@ -9,20 +9,21 @@
 
 function Remove-F2B(){
     
-    write-debug "# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-    write-debug "# + Remove Fail2ban"
-    write-debug "# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    Write-Host "# ++++++++++++++++++++++++++++++++++++++ " -ForegroundColor Yellow
+    Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "Fail2Ban Remove"
+    Write-Host "# ++++++++++++++++++++++++++++++++++++++ " -ForegroundColor Yellow
 
+    Write-Host "# + " -ForegroundColor Yellow -nonewline;
     $Choice = Read-Host 'Do you really want to delete all data [yes/NO] '
 
     if($Choice -eq "yes") {
         
         # Stop Fail2ban
-        Write-debug "# Stop Fail2ban"
+        Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "- Stop Service"
         Stop-F2B
 
         # Remove Folder
-        Write-Debug "# Remove Folder"
+        Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "- Remove Folder"
         Try {
             Remove-Item -Path "$($env:PROGRAMFILES)\Fail2Ban" -Recurse -Force -ErrorAction Stop
         } Catch {
@@ -30,7 +31,7 @@ function Remove-F2B(){
         }
 
         # Remove Registry Key
-        Write-Debug "# Remove Registry Key"
+        Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "- Remove Registry Key"
         Try {
             Remove-Item -Path "HKLM:\SOFTWARE\Fail2Ban\" -Recurse -Force -ErrorAction Stop
         } Catch {
@@ -38,7 +39,7 @@ function Remove-F2B(){
         }
 
         # Remove scheduled Task
-        Write-Debug "# Remove scheduled Task"
+        Write-Host "# + " -ForegroundColor Yellow -nonewline; Write-Host "- Remove scheduled Task"
         Try {
             Unregister-ScheduledTask -TaskName "Fail2Ban-Service" -Confirm:$false
             Unregister-ScheduledTask -TaskName "Fail2Ban-Manager" -Confirm:$false
@@ -50,6 +51,5 @@ function Remove-F2B(){
         Write-Output "Operation canceled"
     }
 
-    write-debug "# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-
+    Write-Host "# ++++++++++++++++++++++++++++++++++++++ " -ForegroundColor Yellow
 }

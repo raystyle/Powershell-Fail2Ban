@@ -1,33 +1,34 @@
-<#
-    .NOTES  
-        File Name   : Remove-F2BRegistryIP.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+Function Remove-F2BRegistryIP(){
+    <#
+    .SYNOPSIS
+        .
+    .PARAMETER Type
+        .
+    .PARAMETER IP
+        .
+    .EXAMPLE
+        C:\PS> Remove-F2BRegistryIP -Type Black -IP 1.2.3.4
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-Function Remove-F2BRegistryIP(){
+    #>
     Param(
-        [Parameter(Mandatory=$true)]
-        [String]$IP,
-        
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true,Position=0)]
         [ValidateSet('Black','White')]
-        [String]$Type
+        [String]$Type,
+
+        [Parameter(Mandatory=$true,Position=1)]
+        [IpAddress]$IP
     )
 
-    if((Test-F2BRegistryIP -IP $IP -Type $Type) -eq $true) {
-        Try {
-            Remove-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\List\$Type" -Name $IP
-            Add-F2BLog -Type Information -Category '4' -Message "Remove IP in $($Type)List : $IP"
-            return $true
-        } Catch {
-            Add-F2BLog -Type Error -Category '4' -Message "Unable to remove IP in $($Type)List : $IP"
-            return $false
-        }
-    } else {
-        Add-F2BLog -Type Warning -Category '4' -Message "IP isn't isn't exists in $($Type)List : $IP"
+    Try {
+        Remove-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\List\$Type" -Name $IP
+        Add-F2BLog -Type Information -Message "Remove registry $IP from $($Type)List"
+        return $true
+    } Catch {
+        Add-F2BLog -Type Error -Message "Unable to remove a registry '$IP' from $($Type)List"
         return $false
     }
+    
 }

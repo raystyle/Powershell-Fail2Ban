@@ -1,29 +1,28 @@
-<#
-    .NOTES  
-        File Name   : Enable-F2B.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+function Remove-F2BFirewallRule(){
+    <#
+    .SYNOPSIS
+        . Remove a new inbound firewall rule
+    .PARAMETER IP
+        . IP addresses
+    .EXAMPLE
+        C:\PS> Remove-F2BFirewallRule -IP 1.2.3.4
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-function Remove-F2BFirewallRule(){
+    #>
     Param(
         [Parameter(Mandatory=$true)]
         [IpAddress]$IP
     )
-
-    if((Test-F2BFirewallRule -IP $IP) -eq $true) {
-        Try {
-            Remove-NetFirewallRule -DisplayName "Fail2Ban - Block $IP"
-            Add-F2BLog -Type Information -Category '2' -Message "Remove firewall rule : $IP"
-            return $true
-        } Catch {
-            Add-F2BLog -Type Error -Category '2' -Message "Unable to remove a firewall rule : $IP"
-            return $false
-        }
-    } else {
-        Add-F2BLog -Type Warning -Category '2' -Message "Firewall Rule isn't exists : $IP"
+    Try {
+        $RuleName = "Fail2Ban - Block $IP"
+        Remove-NetFirewallRule -DisplayName $RuleName
+        Add-F2BLog -Type Information -Message "Remove a firewall rule '$IP' ($RuleName)"
+        return $true
+    } Catch {
+        Add-F2BLog -Type Error -Message "Unable to remove a firewall rule '$IP' ($RuleName)"
         return $false
     }
+
 }

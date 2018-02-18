@@ -1,17 +1,31 @@
-<#         
-    .NOTES  
-        File Name   : Get-F2BConfig.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
-        Date        : 2018-02-15
-        Last Update : 2018-02-15
-        Version     : 1.0.0
+<#
+.SYNOPSIS
+    Function to get current Configuration
+.PARAMETER Name
+    .
+.EXAMPLE
+    C:\PS> Get-F2BConfig -ConfigFolder System
+.NOTES
+    Author      : Thomas ILLIET
+    Date        : 2018-02-15
+    Last Update : 2018-02-15
 #>
-
 function Get-F2BConfig(){
-    $Items = (Get-Item "HKLM:\SOFTWARE\Fail2Ban\Config").Property
-    $hashtable = @{}
-    foreach( $Item in $Items ){
-        $hashtable[$Item] = (Get-ItemPropertyValue -Path "HKLM:\SOFTWARE\Fail2Ban\Config" -Name $Item)
+    Param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('System','Module')]
+        [String]$ConfigFolder
+    )
+    Try {
+        $Items = Get-Item "HKLM:\SOFTWARE\Fail2Ban\Config\$ConfigFolder" -ErrorAction Stop
+        if($Items.Property -ne $null) {
+            $hashtable = @{}
+            foreach( $Item in $Items.Property ){
+                $hashtable[$Item] = (Get-ItemPropertyValue -Path "HKLM:\SOFTWARE\Fail2Ban\Config\$ConfigFolder" -Name $Item)
+            }
+            return $hashtable
+        }
+    } Catch {
+        write-error "Unable to get configuration : $_"
     }
-    return $hashtable
 }

@@ -1,28 +1,33 @@
-<#
-    .NOTES  
-        File Name   : Add-F2BRegistryIP.ps1
-        Author      : Thomas ILLIET, contact@thomas-illiet.fr
+Function Add-F2BRegistryIP(){
+    <#
+    .SYNOPSIS
+        .
+    .PARAMETER Type
+        .
+    .PARAMETER IP
+        .
+    .PARAMETER Unlimited
+        .
+    .EXAMPLE
+        C:\PS> Add-F2BRegistryIP -Type Black -IP 5.6.7.8 
+        C:\PS> Add-F2BRegistryIP -Type Black -IP 5.6.7.8 -Unlimited $true
+    .NOTES
+        Author      : Thomas ILLIET
         Date        : 2018-02-15
         Last Update : 2018-02-15
-        Version     : 1.0.0
-#>
-
-Function Add-F2BRegistryIP(){
+    #>
     Param(
-        [Parameter(Mandatory=$true)]
-        [String]$IP,
-        
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true,Position=0)]
         [ValidateSet('Black','White')]
         [String]$Type,
-
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$true,Position=1)]
+        [IpAddress]$IP,
+        [Parameter(Mandatory=$false,Position=2)]
         [ValidateSet($true,$false)]
         [bool]$Unlimited=$false
     )
-
-    # If not Exist
-    if((Test-F2BRegistryIP -IP $IP -Type $Type) -eq $false) {
+    # Add IP to registry
+    Try {
 
         # Set Duration
         if($Unlimited -eq $true) {
@@ -31,17 +36,13 @@ Function Add-F2BRegistryIP(){
             $Value = ([String](Get-Date))
         }
 
-        # Add IP
-        Try {
-            New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\List\$Type" -Name $IP -Value $Value -PropertyType "String"
-            Add-F2BLog -Type Information -Category '3' -Message "Add new IP in $($Type)List : $IP"
-            return $true
-        } Catch {
-            Add-F2BLog -Type Error -Category '3' -Message "Unable to add a new IP in $($Type)List : $IP"
-            return $false
-        }
-    } else {
-        Add-F2BLog -Type Warning -Category '3' -Message "This IP in $($Type)List already exists: $IP"
+        $NewItem = New-ItemProperty -Path "HKLM:\SOFTWARE\Fail2Ban\List\$Type" -Name $IP -Value $Value -PropertyType "String"
+        Add-F2BLog -Type Information -Message "Add registry $IP to $($Type)List"
+        return $NewItem
+    } Catch {
+        $Message = "Unable to add a registry '$IP' to $($Type)List"
+        Add-F2BLog -Type Error -Message $Message 
         return $false
     }
+
 }
