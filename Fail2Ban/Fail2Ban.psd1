@@ -4,7 +4,7 @@
     RootModule = 'Fail2Ban.psm1'
     
     # Version number of this module.
-    ModuleVersion = '0.0.5'
+    ModuleVersion = '0.0.6'
     
     # ID used to uniquely identify this module
     GUID = '5b658ad8-d1f9-4ab2-8505-89bc6c8651b0'
