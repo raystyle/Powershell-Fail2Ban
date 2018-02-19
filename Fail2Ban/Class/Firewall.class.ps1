@@ -10,7 +10,7 @@ class F2BFirewall {
     }
 
     #+++++++++++++++++++++++
-    # Method : Remove 
+    # Method - Remove 
     [Boolean] Remove() {
         if($this.Get() -ne $false) {
             Try {
@@ -25,7 +25,7 @@ class F2BFirewall {
     }
 
     #+++++++++++++++++++++++
-    # Method + Add
+    # Method - Add
     [Object] Add() {
         if($this.Get() -eq $false) {
             Try {
@@ -47,7 +47,7 @@ class F2BFirewall {
     }
 
     #+++++++++++++++++++++++
-    # Method Get
+    # Method - Get
     [Object] Get() {
         $Obj = Get-NetFirewallRule -DisplayName "Fail2Ban - Block $($this.IP)" -ErrorAction SilentlyContinue
         if($Obj -ne $null) {
@@ -56,4 +56,5 @@ class F2BFirewall {
             return $false
         }
     }
+
 }
